@@ -7,6 +7,7 @@ Checkout this [video](https://www.youtube.com/watch?v=Hajwnmj0xfQ&list=PL3MmuxUb
 1. Create an account with your Google email ID 
 2. Setup your first [project](https://console.cloud.google.com/) if you haven't already
     * eg. "Musify", and note down the "Project ID" (we'll use this later when deploying infra with TF)
+
 3. Setup [service account & authentication](https://cloud.google.com/docs/authentication/getting-started) for this project
     * Grant `Viewer` role to begin with.
     * Download service-account-keys (`.json`) for auth. (Please do not share this key file publicly. Keep it secure!)
