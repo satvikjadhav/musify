@@ -35,7 +35,7 @@ Spin up the Infra -
     - streamify_stg
     - streamify_prod
   - Firewall rule to open port `9092` on the Kafka Instance
-    - This is so that we can access the Kafka Broker
+    - Eventsim will communicate with port `9092` of the broker container of Kafka to send events
 
 - Apply the infra. **Note** - Billing will start as soon as the apply is complete.
 
