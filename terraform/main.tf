@@ -19,6 +19,7 @@ resource "google_compute_instance" "kafka_vm_instance" {
   machine_type              = "e2-standard-2"
   tags                      = ["kafka"]
   allow_stopping_for_update = true
+#   desired_status = "TERMINATED" // value could be "TERMINATED" or "RUNNING"
 
   boot_disk {
     initialize_params {
