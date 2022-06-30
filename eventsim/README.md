@@ -112,7 +112,15 @@ Example for more events (30,000 users for a year, growing at 30% annually):
 
 Example of using Eventsim with Docker, and we would like to export data inside a container:
 ```bash
-docker run -it -v ~/musify/eventsim/data:/opt/eventsim/data --network host events:1.0 -c "examples/example-config.json" --start-time "`date +"%Y-%m-%dT%H:%M:%S"`" --end-time "2022-06-30T17:55:00" --nusers 20000 --continuous data/events.json
+docker run -it \
+-v ~/musify/eventsim/data:/opt/eventsim/data \
+--network host events:1.0 \
+-c "examples/example-config.json" \
+--start-time "`date +"%Y-%m-%dT%H:%M:%S"`" \
+--end-time "2022-06-30T17:55:00" \
+--nusers 20000 \
+--continuous 
+data/events.json
 ```
 
 The following flag:
