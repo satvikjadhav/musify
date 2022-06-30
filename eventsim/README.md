@@ -21,9 +21,7 @@ docker run -it \
     --continuous
 ```
 
-### Config and Usage
-
-#### Config
+### Config
 
 Take a look at the sample config file. It's a JSON file, with key-value pairs.  Here is an explanation of the values
 (many of which match command line options):
@@ -59,3 +57,55 @@ first time with one of those states).
 
 When you run the simulator, you specify the mean values for alpha and beta and the simulator picks values for specific
 users.
+
+
+## Usage
+The program can accept a number of command line options:
+
+    $ bin/eventsim --help
+        -a, --attrition-rate  <arg>    annual user attrition rate (as a fraction of
+                                       current, so 1% => 0.01) (default = 0.0)
+        -c, --config  <arg>            config file
+            --continuous               continuous output
+            --nocontinuous             run all at once
+        -e, --end-time  <arg>          end time for data
+                                       (default = 2015-08-12T14:56:25.006)
+        -f, --from  <arg>              from x days ago (default = 15)
+            --generate-counts          generate listen counts file then stop
+            --nogenerate-counts        run normally
+            --generate-similars        generate similar song file then stop
+            --nogenerate-similars      run normally
+        -g, --growth-rate  <arg>       annual user growth rate (as a fraction of
+                                       current, so 1% => 0.01) (default = 0.0)
+            --kafkaBrokerList  <arg>   kafka broker list
+        -k, --kafkaTopic  <arg>        kafka topic
+        -n, --nusers  <arg>            initial number of users (default = 1)
+        -r, --randomseed  <arg>        random seed
+        -s, --start-time  <arg>        start time for data
+                                       (default = 2015-08-05T14:56:25.040)
+            --tag  <arg>               tag applied to each line (for example, A/B test
+                                       group)
+        -t, --to  <arg>                to y days ago (default = 1)
+        -u, --userid  <arg>            first user id (default = 1)
+            --help                     Show help message
+
+       trailing arguments:
+        output-file (not required)   File name
+
+Only the config file is required.
+
+Parameters can be specified in three ways: you can accept the default value, you can specify them in the config file,
+or you can specify them on the command line. Config file values override defaults; command line options override
+everything.
+
+Example for about 2.5 M events (1000 users for a year, growing at 1% annually):
+
+    $ bin/eventsim -c "examples/site.json" --from 365 --nusers 1000 --growth-rate 0.01 data/fake.json
+    Initial number of users: 1000, Final number of users: 1010
+    Starting to generate events.
+    Damping=0.0625, Weekend-Damping=0.5
+    Start: 2013-10-06T06:27:10, End: 2014-10-05T06:27:10, Now: 2014-10-05T06:27:07, Events:2468822
+
+Example for more events (30,000 users for a year, growing at 30% annually):
+
+    $ bin/eventsim -c "examples/site.json" --from 365 --nusers 30000 --growth-rate 0.30 data/fake.json
