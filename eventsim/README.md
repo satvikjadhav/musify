@@ -109,3 +109,14 @@ Example for about 2.5 M events (1000 users for a year, growing at 1% annually):
 Example for more events (30,000 users for a year, growing at 30% annually):
 
     $ bin/eventsim -c "examples/site.json" --from 365 --nusers 30000 --growth-rate 0.30 data/fake.json
+
+Example of using Eventsim with Docker, and we would like to export data inside a container:
+```bash
+docker run -it -v ~/musify/eventsim/data:/opt/eventsim/data --network host events:1.0 -c "examples/example-config.json" --start-time "`date +"%Y-%m-%dT%H:%M:%S"`" --end-time "2022-06-30T17:55:00" --nusers 20000 --continuous data/events.json
+```
+
+The following flag:
+```bash
+-v ~/musify/eventsim/data:/opt/eventsim/data --network host events:1.0 
+```
+means that anything that is put in `~/musify/eventsim/data` (which is the container folder) can be accessed by the container, and whatever happens inside the container in `/opt/eventsim/data` will be reflected on the host system.  
