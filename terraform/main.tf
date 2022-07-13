@@ -35,3 +35,22 @@ resource "google_compute_instance" "kafka_vm_instance" {
     }
   }
 }
+
+resource "google_compute_firewall" "port_rules" {
+  project = var.project
+  region = var.region
+  name = "kafka-broker-port"
+  network = var.network
+
+  description = "opens the 9092 port in the kafka VM for spark cluster to connect to"
+
+  allow {
+    protocol = "tcp"
+    ports = ["9092"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  tags = ["kafka"]
+  
+}
+
