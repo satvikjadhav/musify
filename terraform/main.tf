@@ -16,10 +16,10 @@ provider "google" {
 
 resource "google_compute_instance" "kafka_vm_instance" {
   name                      = "musify-kafka-instance"
-  machine_type              = "e2-standard-2"
+  machine_type              = "e2-standard-4"
   tags                      = ["kafka"]
   allow_stopping_for_update = true
-#   desired_status = "TERMINATED" // value could be "TERMINATED" or "RUNNING"
+  #   desired_status = "TERMINATED" // value could be "TERMINATED" or "RUNNING"
 
   boot_disk {
     initialize_params {
@@ -38,19 +38,18 @@ resource "google_compute_instance" "kafka_vm_instance" {
 
 resource "google_compute_firewall" "port_rules" {
   project = var.project
-  region = var.region
-  name = "kafka-broker-port"
+  name    = "kafka-broker-port"
   network = var.network
 
   description = "opens the 9092 port in the kafka VM for spark cluster to connect to"
 
   allow {
     protocol = "tcp"
-    ports = ["9092"]
+    ports    = ["9092"]
   }
 
   source_ranges = ["0.0.0.0/0"]
-  tags = ["kafka"]
-  
+  target_tags   = ["kafka"]
+
 }
 
