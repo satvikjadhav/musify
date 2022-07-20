@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  pyspark:
+    container_name: pyspark
+    image: jupyter/pyspark-notebook:spark-2 # because kafka related pyspark modules and classes don't exist in spark 3
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - ./:/home/satvikjadhav/musify/spark/local_dev
