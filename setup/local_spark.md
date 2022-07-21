@@ -33,3 +33,4 @@ Basically means that anything we put in the folder containing the `docker-compos
 
 And that is it. Pretty simple, right?
 
+Alternatively, if you would like to set up `spark` in the "raw" form on a virtual machine, you can find the setup guide [here](https://github.com/satvikjadhav/data-engineering-zoomcamp/blob/main/week_5_batch_processing/notes/installing_spark_on_linux.md), and for setting up `pyspark` you can find the setup guide [here](https://github.com/satvikjadhav/data-engineering-zoomcamp/blob/main/week_5_batch_processing/notes/setting_up_pyspark_on_linux.md)
