@@ -1,4 +1,18 @@
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_json, col, month, hour, dayofmonth, col, year, udf
+
+# decoding streaming data
+@udf
+def string_decode(string: str, encoding='utf-8'):
+    if string:
+        return (string.encode('latin1')         # To bytes, required by 'unicode-escape'
+                      .decode('unicode-escape') # Perform the actual octal-escaping decode
+                      .encode('latin1')         # 1:1 mapping back to bytes
+                      .decode(encoding)         # Decode original encoding
+                      .strip('\"')
+                )
+    else:
+        return string
 
 
 # creatring spark session
@@ -53,3 +67,29 @@ def create_kafka_read_stream(spark: SparkSession, kafka_address: str, kafka_port
     
     return read_stream
 
+
+def stream_process(stream, stream_schema, topic: str):
+    """
+    Fucntion to process the incoming stream data.
+    Convert ts to timestamp format and produce year, month, day,
+    hour columns
+
+    Parameters:
+        stream: DataStreamReader object
+            The data stream reader for our stream
+        stream_schema: dict
+            Schema of stream data
+        topic: str
+            Kafka topic name
+    """
+    
+    # read only value from the incoming message and convert the contents
+    # inside to the passed schema
+    stream = (stream.selectExpr("CAST(value AS STRING)")
+                    .select(
+                        from_json(col("value"), stream_schema).alias("data")
+                    )
+                    .select("data.*")
+            )
+
+    ## INCOMPLETE
