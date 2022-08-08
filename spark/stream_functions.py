@@ -82,7 +82,6 @@ def stream_process(stream, stream_schema, topic: str):
         topic: str
             Kafka topic name
     """
-    
     # read only value from the incoming message and convert the contents
     # inside to the passed schema
     stream = (stream.selectExpr("CAST(value AS STRING)")
@@ -92,4 +91,49 @@ def stream_process(stream, stream_schema, topic: str):
                     .select("data.*")
             )
 
-    ## INCOMPLETE
+    ## adding month, day, hour columns to the stream data
+    stream = (stream.withcolumn("ts",  (col("ts")/1000).cast("timestamp"))
+                    .withcolumn("year", year(col("ts")))
+                    .withcolumn("month", month(col("ts")))
+                    .withcolumn("hour", hour(col("ts")))
+                    .withcolumn("day", dayofmonth(col("ts")))
+              )
+    
+    # rectify string encoding
+    if topic in ["listen_events", "page_view_events"]:
+        stream = (stream.withcolumn("song", string_decode("song"))
+                        .withcolumn("artist", string_decode('artist'))
+                )
+
+    return stream
+
+
+def spark_write_stream(stream,  storage_path, checkpoint_path, trigger="120 seconds", output_mode="append", file_format="parquet"):
+    """
+    Write the stream back to a file store
+    Parameters:
+        stream : DataStreamReader
+            The data stream reader for your stream
+        file_format : str
+            parquet, csv, orc etc
+        storage_path : str
+            The file output path
+        checkpoint_path : str
+            The checkpoint location for spark
+        trigger : str
+            The trigger interval
+        output_mode : str
+            append, complete, update
+    """
+
+    write_stream = (stream
+                    .writeStream
+                    .format(file_format)
+                    .partitionBy('month', 'day', 'year')
+                    .option("path", storage_path)
+                    .option("checkpointLocation", checkpoint_path)
+                    .trigger(processingTime=trigger)
+                    .outputMode(output_mode)
+                    )
+
+    return write_stream
