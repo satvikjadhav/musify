@@ -86,23 +86,23 @@ def stream_process(stream, stream_schema, topic: str):
     # inside to the passed schema
     stream = (stream.selectExpr("CAST(value AS STRING)")
                     .select(
-                        from_json(col("value"), stream_schema).alias("data")
+                        from_json(col("value"), schema=stream_schema).alias("data")
                     )
                     .select("data.*")
             )
 
     ## adding month, day, hour columns to the stream data
-    stream = (stream.withcolumn("ts",  (col("ts")/1000).cast("timestamp"))
-                    .withcolumn("year", year(col("ts")))
-                    .withcolumn("month", month(col("ts")))
-                    .withcolumn("hour", hour(col("ts")))
-                    .withcolumn("day", dayofmonth(col("ts")))
+    stream = (stream.withColumn("ts",  (col("ts")/1000).cast("timestamp"))
+                    .withColumn("year", year(col("ts")))
+                    .withColumn("month", month(col("ts")))
+                    .withColumn("hour", hour(col("ts")))
+                    .withColumn("day", dayofmonth(col("ts")))
               )
     
     # rectify string encoding
     if topic in ["listen_events", "page_view_events"]:
-        stream = (stream.withcolumn("song", string_decode("song"))
-                        .withcolumn("artist", string_decode('artist'))
+        stream = (stream.withColumn("song", string_decode("song"))
+                        .withColumn("artist", string_decode('artist'))
                 )
 
     return stream
