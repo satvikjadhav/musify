@@ -15,6 +15,12 @@ Eventsim uses song data from [Million Songs Dataset](http://millionsongdataset.c
 
 ### Tools & Technologies
 
+- Cloud - Google Cloud Platform
+- Infrastructure as Code software - Terraform
+- Containerization - Docker, Docker Compose
+- Stream Processing - Kafka, Spark Streaming
+- Language - Python
+
 ### Architecture
 
 ![musify-architecture](images/Musify-Architecture.jpg)
