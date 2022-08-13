@@ -27,3 +27,14 @@ variable "network" {
   default     = "default"
   type        = string
 }
+
+variable "bucket" {
+  description = "The name of your bucket. This should be unique across GCP"
+  default     = "musify"
+  type        = string
+}
+
+variable "storage_class" {
+  description = "Storage class type for your bucket. Check official docs for more info."
+  default     = "STANDARD"
+}

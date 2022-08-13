@@ -53,3 +53,25 @@ resource "google_compute_firewall" "port_rules" {
 
 }
 
+resource "google_storage_bucket" "bucket" {
+  name     = var.bucket
+  location = var.region
+  force_destroy = true
+
+  # optional settings
+  storage_class               = var.storage_class
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    action {
+      type = "Delete"
+    }
+    condition {
+      age = 30 // Days
+    }
+  }
+}
