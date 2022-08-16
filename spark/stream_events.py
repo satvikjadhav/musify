@@ -37,7 +37,7 @@ write_page_view_events = spark_write_stream(page_view_events, f'{GCS_STORAGE_PAT
 write_auth_events = spark_write_stream(auth_events, f'{GCS_STORAGE_PATH}/{AUTH_EVENTS_TOPIC}', f'{GCS_STORAGE_PATH}/checkpoint/{AUTH_EVENTS_TOPIC}')
 
 #Start the stream writing processes
-write_auth_events.start()
+write_listen_events.start()
 write_page_view_events.start()
 write_auth_events.start()
 
