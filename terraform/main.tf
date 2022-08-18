@@ -36,6 +36,25 @@ resource "google_compute_instance" "kafka_vm_instance" {
   }
 }
 
+resource "google_compute_instance" "airflow_vm_instance" {
+  name                      = "musify-airflow-instance"
+  machine_type              = "e2-highmem-2"
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = var.vm_image
+      size  = 30
+    }
+  }
+
+  network_interface {
+    network = var.network
+    access_config {
+    }
+  }
+}
+
 resource "google_compute_firewall" "port_rules" {
   project = var.project
   name    = "kafka-broker-port"
@@ -54,8 +73,8 @@ resource "google_compute_firewall" "port_rules" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name     = var.bucket
-  location = var.region
+  name          = var.bucket
+  location      = var.region
   force_destroy = true
 
   # optional settings
@@ -75,3 +94,4 @@ resource "google_storage_bucket" "bucket" {
     }
   }
 }
+
