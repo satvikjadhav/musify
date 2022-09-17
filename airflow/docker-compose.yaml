@@ -73,6 +73,7 @@ x-airflow-common:
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
     - ~/.google/credentials/:/.google/credentials:ro
+    # For dbt local installation with Airflow
     - ../dbt:/dbt
     - ~/.dbt:/home/airflow/.dbt:ro
 
