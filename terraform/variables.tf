@@ -38,3 +38,15 @@ variable "storage_class" {
   description = "Storage class type for your bucket. Check official docs for more info."
   default     = "STANDARD"
 }
+
+variable "stg_bq_dataset" {
+  description = "Storage class type for your bucket. Check official docs for more info."
+  default     = "musify_stg"
+  type        = string
+}
+
+variable "prod_bq_dataset" {
+  description = "Storage class type for your bucket. Check official docs for more info."
+  default     = "musify_prod"
+  type        = string
+}
