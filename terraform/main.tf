@@ -111,7 +111,7 @@ resource "google_bigquery_dataset" "prod_dataset" {
 
 # # google data proc cluster terraform config
 # resource "google_dataproc_cluster" "mulitnode_spark_cluster" {
-#   name   = "streamify-multinode-spark-cluster"
+#   name   = "musify-multinode-spark-cluster"
 #   region = var.region
 
 #   cluster_config {
