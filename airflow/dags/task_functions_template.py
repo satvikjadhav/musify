@@ -4,17 +4,126 @@ from airflow.providers.google.cloud.operators.bigquery import (BigQueryCreateExt
                                                                BigQueryDeleteTableOperator)
 
 
-def create_external_table():
-    ...
+def create_external_table(event: str,
+                          gcp_project_id: str,
+                          bigquery_dataset: str,
+                          external_table_name: str,
+                          gcp_gcs_bucket: str,
+                          events_path: str):
+    """
+    Create an external table using the BigQueryCreateExternalTableOperator
+    Parameters :
+        gcp_project_id : str
+        bigquery_dataset : str
+        external_table_name : str
+        gcp_gcs_bucket : str
+        events_path : str
+
+    Returns :
+        task
+    """
+
+    task = BigQueryCreateExternalTableOperator(
+        task_id=f'{event}_create_external_table',
+        table_resource={
+            'tableReference': {
+                'projectId': gcp_project_id,
+                'datasetId': bigquery_dataset,
+                'tableId': f'{external_table_name}',
+            },
+            'externalDataConfiguration': {
+                'sourceFormat': 'PARQUET',
+                'sourceUris': [f'gs://{gcp_gcs_bucket}/{events_path}/*'],
+            },
+        }
+    )
+
+    return task
 
 
-def create_empty_table():
-    ...
+def create_empty_table(event: str,
+                       gcp_project_id: str,
+                       bigquery_dataset: str,
+                       bigquery_table_name: str,
+                       events_schema: str):
+    """
+    Create an empty table in Bigquery using BigQueryCreateEmptyTableOperator
+    Parameters :
+        gcp_project_id : str
+        bigquery_dataset : str
+        bigquery_table_name : str
+        events_schema : str
+
+    Returns :
+        task
+    """
+
+    task = BigQueryCreateEmptyTableOperator(
+        task_id=f'{event}_create_empty_table',
+        project_id=gcp_project_id,
+        dataset_id=bigquery_dataset,
+        table_id=bigquery_table_name,
+        schema_fields=events_schema,
+        time_partitioning={
+            'type': 'HOUR',
+            'field': 'ts'
+        },
+        exists_ok=True
+    )
+
+    return task
 
 
-def insert_job():
-    ...
+def insert_job(event: str,
+               insert_query_location: str,
+               bigquery_dataset: str,
+               gcp_project_id: str,
+               timeout=300000):
+    """
+    Run the insert query using BigQueryInsertJobOperator
+    Parameters :
+        insert_query_location : str
+        bigquery_dataset : str
+        gcp_project_id : str
+    Returns :
+        task
+    """
+
+    task = BigQueryInsertJobOperator(
+        task_id=f'{event}_execute_insert_query',
+        configuration={
+            'query': {
+                'query': insert_query_location,
+                'useLegacySql': False
+            },
+            'timeoutMs': timeout,
+            'defaultDataset': {
+                'datasetId': bigquery_dataset,
+                'projectId': gcp_project_id
+            }
+        }
+    )
+
+    return task
 
 
-def delete_external_table():
-    ...
+def delete_external_table(event: str,
+                          gcp_project_id: str,
+                          bigquery_dataset: str,
+                          external_table_name: str):
+    """
+    Delete table from Big Query using BigQueryDeleteTableOperator
+    Parameters:
+        gcp_project_id : str
+        bigquery_dataset : str
+        external_table_name : str
+    Returns:
+        task
+    """
+    task = BigQueryDeleteTableOperator(
+        task_id = f'{event}_delete_external_table',
+        deletion_dataset_table = f'{gcp_project_id}.{bigquery_dataset}.{external_table_name}',
+        ignore_if_missing = True
+    )
+
+    return task
