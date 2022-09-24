@@ -64,11 +64,11 @@ resource "google_compute_firewall" "port_rules" {
 
   allow {
     protocol = "tcp"
-    ports    = ["9092"]
+    ports    = ["9092"] //we are exposing the 9092 port in the kafka VM
   }
 
   source_ranges = ["0.0.0.0/0"]
-  target_tags   = ["kafka"]
+  target_tags   = ["kafka"] //We can map it to kafak VM by using the tags we game to kafak vm
 
 }
 
